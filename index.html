@@ -1272,13 +1272,7 @@ function switchInputMode(mode) {
   document.getElementById('monthlyInputGroup').style.display = mode === 'monthly' ? '' : 'none';
   document.getElementById('annualInputGroup').style.display = mode === 'annual' ? '' : 'none';
 
-  if (mode === 'monthly') {
-    // 月給モード: 賞与セクション常に表示
-    document.getElementById('bonusSection').style.display = '';
-  } else {
-    // 年収モード: 賞与込みなら賞与セクション非表示、除くなら表示
-    document.getElementById('bonusSection').style.display = currentBonusMode === 'included' ? 'none' : '';
-  }
+  document.getElementById('bonusSection').style.display = '';
 
   // Sync values
   if (mode === 'annual') {
@@ -1300,7 +1294,7 @@ function switchInputMode(mode) {
 function switchBonusMode(mode) {
   currentBonusMode = mode;
   updateBonusModeButtons();
-  document.getElementById('bonusSection').style.display = mode === 'included' ? 'none' : '';
+  // 賞与セクションは常に表示
   document.getElementById('annualHint').textContent = mode === 'included'
     ? '賞与を含んだ年収総額を入力してください'
     : '賞与を除いた給与部分（月給×12）を入力してください';
