@@ -7,21 +7,21 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root {
-  --bg: #0a0a0f;
-  --surface: #12121a;
-  --surface2: #1a1a26;
-  --border: #2a2a3a;
-  --text: #e0e0e8;
-  --text-dim: #8888a0;
-  --accent: #6c8cff;
-  --accent2: #ff6c8c;
-  --accent3: #6cffa0;
-  --red: #ff4d6a;
-  --orange: #ff8c4d;
-  --yellow: #ffd04d;
-  --green: #4dff8c;
-  --blue: #4d8cff;
-  --purple: #8c4dff;
+  --bg: #f7f7f8;
+  --surface: #ffffff;
+  --surface2: #f0f0f2;
+  --border: #e5e5e7;
+  --text: #1a1a1a;
+  --text-dim: #6b6b6b;
+  --accent: #1a1a1a;
+  --accent2: #555555;
+  --accent3: #2e7d32;
+  --red: #d32f2f;
+  --orange: #e65100;
+  --yellow: #f9a825;
+  --green: #2e7d32;
+  --blue: #1565c0;
+  --purple: #6a1b9a;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -48,11 +48,9 @@ header {
 }
 
 header h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--text);
   margin-bottom: 8px;
 }
 
@@ -83,8 +81,8 @@ header p {
 
 .tab-btn:hover { color: var(--text); }
 .tab-btn.active {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
+  color: var(--text);
+  border-bottom-color: var(--text);
 }
 
 .tab-content { display: none; }
@@ -104,14 +102,16 @@ header p {
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 24px;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
 .card h2 {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   margin-bottom: 20px;
-  color: var(--accent);
+  color: var(--text);
+  font-weight: 600;
 }
 
 .form-group {
@@ -128,9 +128,9 @@ header p {
 .form-group input, .form-group select {
   width: 100%;
   padding: 10px 14px;
-  background: var(--surface2);
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 10px;
   color: var(--text);
   font-size: 0.95rem;
   outline: none;
@@ -138,7 +138,7 @@ header p {
 }
 
 .form-group input:focus, .form-group select:focus {
-  border-color: var(--accent);
+  border-color: #999;
 }
 
 .form-row {
@@ -162,14 +162,14 @@ header p {
 .bonus-section {
   background: var(--surface2);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 14px;
   margin-bottom: 16px;
 }
 
 .bonus-section .section-label {
   font-size: 0.85rem;
-  color: var(--accent);
+  color: var(--text);
   font-weight: 600;
   margin-bottom: 10px;
 }
@@ -177,18 +177,18 @@ header p {
 .btn-calc {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(135deg, var(--accent), #5070dd);
+  background: #1a1a1a;
   border: none;
   border-radius: 10px;
   color: #fff;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   margin-top: 8px;
-  transition: opacity 0.2s;
+  transition: background 0.2s;
 }
 
-.btn-calc:hover { opacity: 0.9; }
+.btn-calc:hover { background: #333; }
 
 /* Results */
 .result-summary {
@@ -203,8 +203,9 @@ header p {
 }
 
 .stat-card {
-  background: var(--surface2);
-  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
   padding: 18px;
   text-align: center;
 }
@@ -226,9 +227,9 @@ header p {
   margin-top: 2px;
 }
 
-.value-green { color: var(--green); }
-.value-red { color: var(--red); }
-.value-blue { color: var(--blue); }
+.value-green { color: #2e7d32; }
+.value-red { color: #d32f2f; }
+.value-blue { color: #1565c0; }
 
 .chart-row {
   display: grid;
@@ -242,8 +243,9 @@ header p {
 }
 
 .chart-box {
-  background: var(--surface2);
-  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
   padding: 18px;
   position: relative;
   height: 300px;
@@ -299,9 +301,9 @@ header p {
   margin-left: 6px;
 }
 
-.tag-tax { background: rgba(255,77,106,0.15); color: var(--red); }
-.tag-social { background: rgba(77,140,255,0.15); color: var(--blue); }
-.tag-local { background: rgba(255,140,77,0.15); color: var(--orange); }
+.tag-tax { background: #fde8e8; color: #d32f2f; }
+.tag-social { background: #e3f2fd; color: #1565c0; }
+.tag-local { background: #fff3e0; color: #e65100; }
 
 /* Catalog Table */
 .catalog-filter {
@@ -322,16 +324,17 @@ header p {
   transition: all 0.2s;
 }
 
-.filter-btn:hover { border-color: var(--accent); color: var(--text); }
-.filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.filter-btn:hover { border-color: #999; color: var(--text); }
+.filter-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
 
 .catalog-table {
   width: 100%;
   border-collapse: collapse;
   background: var(--surface);
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
   border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
 .catalog-table thead th {
@@ -408,7 +411,7 @@ header p {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0,0,0,0.4);
   z-index: 1000;
   align-items: center;
   justify-content: center;
@@ -420,7 +423,7 @@ header p {
 }
 
 .modal {
-  background: var(--surface);
+  background: #fff;
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 32px;
@@ -430,6 +433,7 @@ header p {
   overflow-y: auto;
   position: relative;
   animation: modalIn 0.2s ease-out;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
 }
 
 @keyframes modalIn {
@@ -456,9 +460,9 @@ header p {
 }
 
 .modal-close:hover {
-  background: var(--red);
-  color: #fff;
-  border-color: var(--red);
+  background: #e5e5e7;
+  color: var(--text);
+  border-color: #e5e5e7;
 }
 
 .modal h2 {
@@ -500,7 +504,7 @@ header p {
 .modal-rate .rate-value {
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--accent);
+  color: var(--text);
 }
 
 .modal-desc {
@@ -517,7 +521,7 @@ header p {
   border-radius: 8px;
   padding: 14px 18px;
   line-height: 1.6;
-  border-left: 3px solid var(--accent);
+  border-left: 3px solid #ccc;
 }
 
 /* Timeline */
@@ -542,7 +546,8 @@ header p {
   padding: 16px 20px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
 .timeline-item::before {
@@ -553,13 +558,13 @@ header p {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--accent);
+  background: #999;
   border: 2px solid var(--bg);
 }
 
 .timeline-year {
   font-size: 0.8rem;
-  color: var(--accent);
+  color: var(--text-dim);
   font-weight: 700;
   margin-bottom: 4px;
 }
@@ -615,7 +620,7 @@ header p {
   display: flex;
   justify-content: space-between;
   padding: 8px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid var(--border);
   font-size: 0.9rem;
 }
 
@@ -651,15 +656,16 @@ header p {
 .employer-section {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 24px;
+  border-radius: 16px;
+  padding: 28px;
   margin-top: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
 .employer-section h2 {
   font-size: 1.1rem;
   margin-bottom: 6px;
-  color: var(--orange);
+  color: var(--text);
 }
 
 .employer-section .section-sub {
@@ -703,8 +709,8 @@ header p {
   margin-top: 2px;
 }
 
-.value-orange { color: var(--orange); }
-.value-yellow { color: var(--yellow); }
+.value-orange { color: #e65100; }
+.value-yellow { color: #f9a825; }
 
 /* True cost stacked bar */
 .true-cost-bar {
@@ -771,8 +777,8 @@ header p {
 .employer-table .emp-total td { padding-top: 14px; }
 
 .note-box {
-  background: rgba(255,140,77,0.08);
-  border-left: 3px solid var(--orange);
+  background: #f9f9f9;
+  border-left: 3px solid #ccc;
   border-radius: 0 8px 8px 0;
   padding: 14px 18px;
   margin-top: 16px;
@@ -791,6 +797,7 @@ header p {
 <header>
   <h1>日本の税金・社会保険シミュレーター</h1>
   <p>あなたの収入からどれだけ引かれているか、すべて可視化します</p>
+  <p style="font-size:0.8rem;color:var(--text-dim);margin-top:8px">2025年5月時点の税率・保険料率に基づいています。最新の情報は<a href="https://www.nta.go.jp/" target="_blank" rel="noopener" style="color:var(--text-dim);text-decoration:underline">国税庁</a>・<a href="https://www.nenkin.go.jp/" target="_blank" rel="noopener" style="color:var(--text-dim);text-decoration:underline">日本年金機構</a>等をご確認ください。</p>
 </header>
 
 <div class="container">
@@ -1522,14 +1529,14 @@ function renderResults(r) {
     <div class="card" style="margin-bottom:20px">
       <h2>年収の内訳（負担率 ${burdenRate}%）</h2>
       <div class="burden-bar">
-        <div style="width:${(r.totalIncomeTax/r.income*100)}%;background:#ff4d6a" title="所得税">所得税</div>
-        <div style="width:${(r.residentTax/r.income*100)}%;background:#ff8c4d" title="住民税">住民税</div>
-        ${isSelf && r.bizTax > 0 ? `<div style="width:${(r.bizTax/r.income*100)}%;background:#ffd04d" title="事業税">事業税</div>` : ''}
-        <div style="width:${(r.healthIns/r.income*100)}%;background:#4d8cff" title="健康保険">健保</div>
-        ${r.careIns > 0 ? `<div style="width:${(r.careIns/r.income*100)}%;background:#8c4dff" title="介護保険">介護</div>` : ''}
-        <div style="width:${(r.pension/r.income*100)}%;background:#4dddff" title="年金">年金</div>
-        ${!isSelf ? `<div style="width:${(r.employmentIns/r.income*100)}%;background:#dd4dff" title="雇用保険">雇用</div>` : ''}
-        <div style="width:${(r.takeHome/r.income*100)}%;background:#4dff8c" title="手取り">手取り</div>
+        <div style="width:${(r.totalIncomeTax/r.income*100)}%;background:#ef5350" title="所得税">所得税</div>
+        <div style="width:${(r.residentTax/r.income*100)}%;background:#ff7043" title="住民税">住民税</div>
+        ${isSelf && r.bizTax > 0 ? `<div style="width:${(r.bizTax/r.income*100)}%;background:#ffa726" title="事業税">事業税</div>` : ''}
+        <div style="width:${(r.healthIns/r.income*100)}%;background:#42a5f5" title="健康保険">健保</div>
+        ${r.careIns > 0 ? `<div style="width:${(r.careIns/r.income*100)}%;background:#9575cd" title="介護保険">介護</div>` : ''}
+        <div style="width:${(r.pension/r.income*100)}%;background:#4db6ac" title="年金">年金</div>
+        ${!isSelf ? `<div style="width:${(r.employmentIns/r.income*100)}%;background:#ba68c8" title="雇用保険">雇用</div>` : ''}
+        <div style="width:${(r.takeHome/r.income*100)}%;background:#66bb6a" title="手取り">手取り</div>
       </div>
     </div>
 
@@ -1627,10 +1634,10 @@ function renderEmployerSection(r) {
 
       <h3 style="font-size:0.9rem;color:var(--text-dim);margin:20px 0 8px">真の人件費の内訳</h3>
       <div class="true-cost-bar">
-        <div style="width:${(r.takeHome/r.trueLaborCost*100)}%;background:#4dff8c">手取り<span>${((r.takeHome/r.trueLaborCost)*100).toFixed(0)}%</span></div>
-        <div style="width:${(r.totalTax/r.trueLaborCost*100)}%;background:#ff4d6a">税金<span>${((r.totalTax/r.trueLaborCost)*100).toFixed(0)}%</span></div>
-        <div style="width:${(r.totalSocial/r.trueLaborCost*100)}%;background:#4d8cff">社保(本人)<span>${((r.totalSocial/r.trueLaborCost)*100).toFixed(0)}%</span></div>
-        <div style="width:${(r.totalEmployerBurden/r.trueLaborCost*100)}%;background:#ff8c4d">社保(会社)<span>${((r.totalEmployerBurden/r.trueLaborCost)*100).toFixed(0)}%</span></div>
+        <div style="width:${(r.takeHome/r.trueLaborCost*100)}%;background:#66bb6a">手取り<span>${((r.takeHome/r.trueLaborCost)*100).toFixed(0)}%</span></div>
+        <div style="width:${(r.totalTax/r.trueLaborCost*100)}%;background:#ef5350">税金<span>${((r.totalTax/r.trueLaborCost)*100).toFixed(0)}%</span></div>
+        <div style="width:${(r.totalSocial/r.trueLaborCost*100)}%;background:#42a5f5">社保(本人)<span>${((r.totalSocial/r.trueLaborCost)*100).toFixed(0)}%</span></div>
+        <div style="width:${(r.totalEmployerBurden/r.trueLaborCost*100)}%;background:#ff7043">社保(会社)<span>${((r.totalEmployerBurden/r.trueLaborCost)*100).toFixed(0)}%</span></div>
       </div>
 
       <table class="employer-table">
@@ -1698,12 +1705,12 @@ function drawPieChart(r) {
   const isSelf = r.employment === 'self';
   const labels = ['所得税', '復興特別所得税', '住民税'];
   const data = [r.incomeTax, r.reconstructionTax, r.residentTax];
-  const colors = ['#ff4d6a', '#ff6b7a', '#ff8c4d'];
-  if (isSelf && r.bizTax > 0) { labels.push('個人事業税'); data.push(r.bizTax); colors.push('#ffd04d'); }
-  labels.push(isSelf ? '国民健康保険' : '健康保険'); data.push(r.healthIns); colors.push('#4d8cff');
-  if (r.careIns > 0) { labels.push('介護保険'); data.push(r.careIns); colors.push('#8c4dff'); }
-  labels.push(isSelf ? '国民年金' : '厚生年金'); data.push(r.pension); colors.push('#4dddff');
-  if (!isSelf) { labels.push('雇用保険'); data.push(r.employmentIns); colors.push('#dd4dff'); }
+  const colors = ['#ef5350', '#e57373', '#ff7043'];
+  if (isSelf && r.bizTax > 0) { labels.push('個人事業税'); data.push(r.bizTax); colors.push('#ffa726'); }
+  labels.push(isSelf ? '国民健康保険' : '健康保険'); data.push(r.healthIns); colors.push('#42a5f5');
+  if (r.careIns > 0) { labels.push('介護保険'); data.push(r.careIns); colors.push('#9575cd'); }
+  labels.push(isSelf ? '国民年金' : '厚生年金'); data.push(r.pension); colors.push('#4db6ac');
+  if (!isSelf) { labels.push('雇用保険'); data.push(r.employmentIns); colors.push('#ba68c8'); }
 
   new Chart(ctx, {
     type: 'doughnut',
@@ -1711,7 +1718,7 @@ function drawPieChart(r) {
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: {
-        legend: { position: 'right', labels: { color: '#e0e0e8', font: { size: 11 }, padding: 8 } },
+        legend: { position: 'right', labels: { color: '#1a1a1a', font: { size: 11 }, padding: 8 } },
         tooltip: { callbacks: { label: (ctx) => `${ctx.label}: ${fmt(ctx.raw)}円` } }
       }
     }
@@ -1724,11 +1731,11 @@ function drawBarChart(r) {
   const isSelf = r.employment === 'self';
   const labels = ['所得税', '住民税'];
   const data = [r.totalIncomeTax, r.residentTax];
-  const colors = ['#ff4d6a', '#ff8c4d'];
-  if (isSelf && r.bizTax > 0) { labels.push('事業税'); data.push(r.bizTax); colors.push('#ffd04d'); }
-  labels.push(isSelf ? '国保' : '健保'); data.push(r.healthIns + r.careIns); colors.push('#4d8cff');
-  labels.push(isSelf ? '国年' : '厚年'); data.push(r.pension); colors.push('#4dddff');
-  if (!isSelf) { labels.push('雇用'); data.push(r.employmentIns); colors.push('#dd4dff'); }
+  const colors = ['#ef5350', '#ff7043'];
+  if (isSelf && r.bizTax > 0) { labels.push('事業税'); data.push(r.bizTax); colors.push('#ffa726'); }
+  labels.push(isSelf ? '国保' : '健保'); data.push(r.healthIns + r.careIns); colors.push('#42a5f5');
+  labels.push(isSelf ? '国年' : '厚年'); data.push(r.pension); colors.push('#4db6ac');
+  if (!isSelf) { labels.push('雇用'); data.push(r.employmentIns); colors.push('#ba68c8'); }
 
   new Chart(ctx, {
     type: 'bar',
@@ -1737,8 +1744,8 @@ function drawBarChart(r) {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => `${fmt(ctx.raw)}円` } } },
       scales: {
-        x: { ticks: { color: '#8888a0', font: { size: 11 } }, grid: { display: false } },
-        y: { ticks: { color: '#8888a0', font: { size: 11 }, callback: (v) => fmtMan(v) + '円' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+        x: { ticks: { color: '#6b6b6b', font: { size: 11 } }, grid: { display: false } },
+        y: { ticks: { color: '#6b6b6b', font: { size: 11 }, callback: (v) => fmtMan(v) + '円' }, grid: { color: 'rgba(0,0,0,0.06)' } }
       }
     }
   });
