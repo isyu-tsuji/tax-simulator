@@ -843,13 +843,22 @@ header p {
             <div class="form-hint">毎月の給与の額面金額</div>
           </div>
 
-          <div id="annualInputGroup" class="form-group" style="display:none">
-            <label>年収（額面・万円）※賞与を除く</label>
-            <input type="number" id="annualSalary" value="420" min="0" step="1">
-            <div class="form-hint">賞与を除いた年間の給与総額（月給×12ヶ月分）</div>
+          <div id="annualInputGroup" style="display:none">
+            <div class="form-group">
+              <label>年収（額面・万円）</label>
+              <input type="number" id="annualSalary" value="560" min="0" step="1">
+            </div>
+            <div class="form-group">
+              <label>賞与の扱い</label>
+              <div style="display:flex;gap:4px">
+                <button type="button" class="input-mode-btn active" data-bonus-mode="included" onclick="switchBonusMode('included')">賞与込み</button>
+                <button type="button" class="input-mode-btn" data-bonus-mode="excluded" onclick="switchBonusMode('excluded')">賞与を除く</button>
+              </div>
+            </div>
+            <div id="annualHint" class="form-hint">賞与を含んだ年収総額を入力してください</div>
           </div>
 
-          <div class="bonus-section">
+          <div id="bonusSection" class="bonus-section">
             <div class="section-label">賞与（ボーナス）</div>
             <div class="form-row">
               <div class="form-group">
@@ -1253,39 +1262,90 @@ const timelineEvents = [
 // CALCULATION ENGINE
 // ============================================================
 let currentInputMode = 'monthly';
+let currentBonusMode = 'included'; // 'included' or 'excluded'
 
 function switchInputMode(mode) {
   currentInputMode = mode;
-  document.querySelectorAll('.input-mode-btn').forEach(btn => {
+  document.querySelectorAll('[data-mode]').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.mode === mode);
   });
   document.getElementById('monthlyInputGroup').style.display = mode === 'monthly' ? '' : 'none';
   document.getElementById('annualInputGroup').style.display = mode === 'annual' ? '' : 'none';
 
+  if (mode === 'monthly') {
+    // 月給モード: 賞与セクション常に表示
+    document.getElementById('bonusSection').style.display = '';
+  } else {
+    // 年収モード: 賞与込みなら賞与セクション非表示、除くなら表示
+    document.getElementById('bonusSection').style.display = currentBonusMode === 'included' ? 'none' : '';
+  }
+
   // Sync values
   if (mode === 'annual') {
-    const monthly = Number(document.getElementById('monthlySalary').value);
-    document.getElementById('annualSalary').value = (monthly * 12).toFixed(0);
+    const inc = getIncomeFromMonthly();
+    document.getElementById('annualSalary').value = Math.round(inc.annual / 10000);
+    currentBonusMode = 'included';
+    updateBonusModeButtons();
   } else {
-    const annual = Number(document.getElementById('annualSalary').value);
-    document.getElementById('monthlySalary').value = (annual / 12).toFixed(1);
+    // 年収から月給を逆算
+    const annualVal = Number(document.getElementById('annualSalary').value) * 10000;
+    const bonusCount = Number(document.getElementById('bonusCount').value);
+    const bonusMonths = Number(document.getElementById('bonusMonths').value);
+    const monthly = annualVal / (12 + bonusMonths * bonusCount);
+    document.getElementById('monthlySalary').value = Math.round(monthly / 10000 * 10) / 10;
   }
   updateIncomeDisplay();
 }
 
-function getAnnualIncome() {
-  let monthly;
-  if (currentInputMode === 'monthly') {
-    monthly = Number(document.getElementById('monthlySalary').value) * 10000;
-  } else {
-    const annualVal = Number(document.getElementById('annualSalary').value) * 10000;
-    monthly = annualVal / 12;
-  }
+function switchBonusMode(mode) {
+  currentBonusMode = mode;
+  updateBonusModeButtons();
+  document.getElementById('bonusSection').style.display = mode === 'included' ? 'none' : '';
+  document.getElementById('annualHint').textContent = mode === 'included'
+    ? '賞与を含んだ年収総額を入力してください'
+    : '賞与を除いた給与部分（月給×12）を入力してください';
+  updateIncomeDisplay();
+}
+
+function updateBonusModeButtons() {
+  document.querySelectorAll('[data-bonus-mode]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.bonusMode === currentBonusMode);
+  });
+}
+
+// 月給ベースで計算（内部用）
+function getIncomeFromMonthly() {
+  const monthly = Number(document.getElementById('monthlySalary').value) * 10000;
   const bonusCount = Number(document.getElementById('bonusCount').value);
   const bonusMonths = Number(document.getElementById('bonusMonths').value);
   const monthlyTotal = monthly * 12;
   const bonusTotal = monthly * bonusMonths * bonusCount;
   return { monthly, monthlyTotal, bonusTotal, bonusCount, bonusMonths, annual: monthlyTotal + bonusTotal };
+}
+
+function getAnnualIncome() {
+  if (currentInputMode === 'monthly') {
+    return getIncomeFromMonthly();
+  }
+
+  const annualInput = Number(document.getElementById('annualSalary').value) * 10000;
+  const bonusCount = Number(document.getElementById('bonusCount').value);
+  const bonusMonths = Number(document.getElementById('bonusMonths').value);
+
+  if (currentBonusMode === 'included') {
+    // 賞与込み: 年収から月給を逆算（年収 = 月給×12 + 月給×bonusMonths×bonusCount）
+    const totalMonths = 12 + bonusMonths * bonusCount;
+    const monthly = totalMonths > 0 ? annualInput / totalMonths : 0;
+    const monthlyTotal = monthly * 12;
+    const bonusTotal = annualInput - monthlyTotal;
+    return { monthly, monthlyTotal, bonusTotal, bonusCount, bonusMonths, annual: annualInput };
+  } else {
+    // 賞与除く: 入力値 = 月給×12、賞与は別途
+    const monthly = annualInput / 12;
+    const monthlyTotal = annualInput;
+    const bonusTotal = monthly * bonusMonths * bonusCount;
+    return { monthly, monthlyTotal, bonusTotal, bonusCount, bonusMonths, annual: monthlyTotal + bonusTotal };
+  }
 }
 
 function updateIncomeDisplay() {
