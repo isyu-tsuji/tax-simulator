@@ -602,6 +602,21 @@ header p {
 
 .hidden { display: none !important; }
 
+.input-mode-btn {
+  flex: 1;
+  padding: 8px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.input-mode-btn:hover { border-color: #999; color: var(--text); }
+.input-mode-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
 /* Monthly comparison */
 .monthly-box {
   background: var(--surface2);
@@ -815,9 +830,23 @@ header p {
           <h2>あなたの情報</h2>
 
           <div class="form-group">
+            <label>入力方法</label>
+            <div style="display:flex;gap:4px;margin-bottom:8px">
+              <button type="button" class="input-mode-btn active" data-mode="monthly" onclick="switchInputMode('monthly')">月給から入力</button>
+              <button type="button" class="input-mode-btn" data-mode="annual" onclick="switchInputMode('annual')">年収から入力</button>
+            </div>
+          </div>
+
+          <div id="monthlyInputGroup" class="form-group">
             <label>月給（額面・万円）</label>
             <input type="number" id="monthlySalary" value="35" min="0" step="1">
             <div class="form-hint">毎月の給与の額面金額</div>
+          </div>
+
+          <div id="annualInputGroup" class="form-group" style="display:none">
+            <label>年収（額面・万円）※賞与を除く</label>
+            <input type="number" id="annualSalary" value="420" min="0" step="1">
+            <div class="form-hint">賞与を除いた年間の給与総額（月給×12ヶ月分）</div>
           </div>
 
           <div class="bonus-section">
@@ -1223,8 +1252,35 @@ const timelineEvents = [
 // ============================================================
 // CALCULATION ENGINE
 // ============================================================
+let currentInputMode = 'monthly';
+
+function switchInputMode(mode) {
+  currentInputMode = mode;
+  document.querySelectorAll('.input-mode-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mode === mode);
+  });
+  document.getElementById('monthlyInputGroup').style.display = mode === 'monthly' ? '' : 'none';
+  document.getElementById('annualInputGroup').style.display = mode === 'annual' ? '' : 'none';
+
+  // Sync values
+  if (mode === 'annual') {
+    const monthly = Number(document.getElementById('monthlySalary').value);
+    document.getElementById('annualSalary').value = (monthly * 12).toFixed(0);
+  } else {
+    const annual = Number(document.getElementById('annualSalary').value);
+    document.getElementById('monthlySalary').value = (annual / 12).toFixed(1);
+  }
+  updateIncomeDisplay();
+}
+
 function getAnnualIncome() {
-  const monthly = Number(document.getElementById('monthlySalary').value) * 10000;
+  let monthly;
+  if (currentInputMode === 'monthly') {
+    monthly = Number(document.getElementById('monthlySalary').value) * 10000;
+  } else {
+    const annualVal = Number(document.getElementById('annualSalary').value) * 10000;
+    monthly = annualVal / 12;
+  }
   const bonusCount = Number(document.getElementById('bonusCount').value);
   const bonusMonths = Number(document.getElementById('bonusMonths').value);
   const monthlyTotal = monthly * 12;
@@ -1839,7 +1895,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 // Auto-calculate on input change
-document.querySelectorAll('#monthlySalary, #bonusCount, #bonusMonths, #age, #dependents, #employment, #spouse, #region').forEach(el => {
+document.querySelectorAll('#monthlySalary, #annualSalary, #bonusCount, #bonusMonths, #age, #dependents, #employment, #spouse, #region').forEach(el => {
   el.addEventListener('change', calculate);
   el.addEventListener('input', () => {
     clearTimeout(el._debounce);
