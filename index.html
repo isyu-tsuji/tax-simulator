@@ -929,6 +929,69 @@ header p {
             </div>
           </div>
 
+          <div class="form-row">
+            <div class="form-group">
+              <label>都道府県（健保料率）</label>
+              <select id="prefecture">
+                <option value="0.0498">北海道（9.96%）</option>
+                <option value="0.0484">青森（9.68%）</option>
+                <option value="0.0488">岩手（9.76%）</option>
+                <option value="0.0503">宮城（10.06%）</option>
+                <option value="0.0499">秋田（9.98%）</option>
+                <option value="0.0490">山形（9.80%）</option>
+                <option value="0.0487">福島（9.74%）</option>
+                <option value="0.0495">茨城（9.90%）</option>
+                <option value="0.0493">栃木（9.86%）</option>
+                <option value="0.0495">群馬（9.90%）</option>
+                <option value="0.0478">埼玉（9.56%）</option>
+                <option value="0.0489">千葉（9.78%）</option>
+                <option value="0.0499" selected>東京（9.98%）</option>
+                <option value="0.0502">神奈川（10.04%）</option>
+                <option value="0.0475">新潟（9.50%）</option>
+                <option value="0.0486">富山（9.72%）</option>
+                <option value="0.0494">石川（9.88%）</option>
+                <option value="0.0501">福井（10.02%）</option>
+                <option value="0.0496">山梨（9.92%）</option>
+                <option value="0.0494">長野（9.88%）</option>
+                <option value="0.0488">岐阜（9.76%）</option>
+                <option value="0.0497">静岡（9.94%）</option>
+                <option value="0.0502">愛知（10.04%）</option>
+                <option value="0.0488">三重（9.76%）</option>
+                <option value="0.0496">滋賀（9.92%）</option>
+                <option value="0.0499">京都（9.98%）</option>
+                <option value="0.0506">大阪（10.12%）</option>
+                <option value="0.0503">兵庫（10.06%）</option>
+                <option value="0.0487">奈良（9.74%）</option>
+                <option value="0.0490">和歌山（9.80%）</option>
+                <option value="0.0490">鳥取（9.80%）</option>
+                <option value="0.0505">島根（10.10%）</option>
+                <option value="0.0501">岡山（10.02%）</option>
+                <option value="0.0504">広島（10.08%）</option>
+                <option value="0.0503">山口（10.06%）</option>
+                <option value="0.0505">徳島（10.10%）</option>
+                <option value="0.0507">香川（10.14%）</option>
+                <option value="0.0501">愛媛（10.02%）</option>
+                <option value="0.0499">高知（9.98%）</option>
+                <option value="0.0534">福岡（10.68%）</option>
+                <option value="0.0517">佐賀（10.34%）</option>
+                <option value="0.0504">長崎（10.08%）</option>
+                <option value="0.0506">熊本（10.12%）</option>
+                <option value="0.0504">大分（10.08%）</option>
+                <option value="0.0493">宮崎（9.86%）</option>
+                <option value="0.0503">鹿児島（10.06%）</option>
+                <option value="0.0490">沖縄（9.80%）</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>業種（雇用・労災保険）</label>
+              <select id="industry">
+                <option value="general">一般の事業</option>
+                <option value="construction">建設業</option>
+                <option value="agriculture">農林水産業</option>
+              </select>
+            </div>
+          </div>
+
           <button class="btn-calc" onclick="calculate()">シミュレーションする</button>
         </div>
       </div>
@@ -1405,7 +1468,7 @@ function calculate() {
 
     // 社会保険料 - 月給ベースで計算（標準報酬月額）
     const stdMonthly = Math.min(inc.monthly, 1390000);
-    const healthInsRate = 0.0499;
+    const healthInsRate = Number(document.getElementById('prefecture').value);
     const healthInsMonthly = Math.floor(stdMonthly * healthInsRate);
 
     // 賞与の社会保険料（標準賞与額ベース、1回150万円上限）
@@ -1427,8 +1490,10 @@ function calculate() {
     const pensionInsBonus = Math.floor(pensionBonusPerTime * pensionRate) * inc.bonusCount;
     const pension = pensionInsMonthly * 12 + pensionInsBonus;
 
-    // 雇用保険（年収ベース）
-    const employmentIns = Math.floor(income * 0.006);
+    // 雇用保険（年収ベース、業種別）
+    const industryType = document.getElementById('industry').value;
+    const empInsRateEmployee = industryType === 'construction' ? 0.007 : industryType === 'agriculture' ? 0.007 : 0.006;
+    const employmentIns = Math.floor(income * empInsRateEmployee);
 
     const totalSocial = healthIns + careIns + pension + employmentIns;
 
@@ -1459,10 +1524,12 @@ function calculate() {
     const empCareIns = careIns;
     // 厚生年金（会社も同額負担）
     const empPension = pension;
-    // 雇用保険（事業主負担 0.95%）
-    const empEmploymentIns = Math.floor(income * 0.0095);
-    // 労災保険（全額事業主負担、事務職0.25%で概算）
-    const empWorkersComp = Math.floor(income * 0.0025);
+    // 雇用保険（事業主負担、業種別）
+    const empInsRateEmployer = industryType === 'construction' ? 0.0115 : industryType === 'agriculture' ? 0.0105 : 0.0095;
+    const empEmploymentIns = Math.floor(income * empInsRateEmployer);
+    // 労災保険（全額事業主負担、業種別）
+    const workersCompRate = industryType === 'construction' ? 0.0095 : industryType === 'agriculture' ? 0.006 : 0.003;
+    const empWorkersComp = Math.floor(income * workersCompRate);
     // 子ども・子育て拠出金（全額事業主負担、0.36%）
     const empChildContrib = Math.floor(income * 0.0036);
 
@@ -1949,7 +2016,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 // Auto-calculate on input change
-document.querySelectorAll('#monthlySalary, #annualSalary, #bonusCount, #bonusMonths, #age, #dependents, #employment, #spouse, #region').forEach(el => {
+document.querySelectorAll('#monthlySalary, #annualSalary, #bonusCount, #bonusMonths, #age, #dependents, #employment, #spouse, #region, #prefecture, #industry').forEach(el => {
   el.addEventListener('change', calculate);
   el.addEventListener('input', () => {
     clearTimeout(el._debounce);
